@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Продуктовый магазин{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px;
+               background: #f0f4f8; color: #222; }
+        body.dark { background: #1e1e2e; color: #e0e0e0; }
+        body.blue { background: #e3f0ff; color: #103050; }
+        .card { background: #fff; border-radius: 10px; padding: 20px;
+                max-width: 900px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
+        body.dark .card { background: #2b2b3d; }
+        body.blue .card { background: #fff; }
+        h1 { margin-top: 0; font-size: 22px; }
+        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+        th, td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; }
+        th { background: #dde8f5; }
+        body.dark th { background: #3a3a55; }
+        tr:nth-child(even) { background: #f5f5f5; }
+        body.dark tr:nth-child(even) { background: #32324a; }
+        input, select, button {
+            padding: 7px 10px; border: 1px solid #bbb; border-radius: 6px;
+            font-size: 14px; margin: 2px 4px 2px 0;
+        }
+        button { background: #2f6fed; color: #fff; border: none; cursor: pointer; }
+        button.delete { background: #d33; }
+        button.link { background: transparent; color: #2f6fed;
+                      text-decoration: underline; padding: 2px 0; }
+        .flash { padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; }
+        .flash.error { background: #fdecea; color: #b71c1c; }
+        .flash.success { background: #e8f5e9; color: #1b5e20; }
+        body.dark .flash.error { background: #5a2222; color: #ffb3b3; }
+        body.dark .flash.success { background: #245a2c; color: #b9f6ca; }
+        .topbar { max-width: 900px; margin: 0 auto 15px;
+                  display: flex; justify-content: space-between; align-items: center; }
+        label { margin-right: 6px; }
+        fieldset { border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; }
+    </style>
+</head>
+<body class="{{ theme }}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+            <div class="flash {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>

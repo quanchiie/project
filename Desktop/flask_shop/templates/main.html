@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+    <span>Текущий пользователь: <b>{{ login }}</b></span>
+    <span>
+        Стиль:
+        {% for t in ["light", "dark", "blue"] %}
+            <a class="link" href="{{ url_for('set_theme', name=t) }}">{{ t }}</a>
+        {% endfor %}
+        |
+        <a href="{{ url_for('logout') }}">Выйти</a>
+    </span>
+</div>
+
+<div class="card">
+    <h1>Продуктовый магазин</h1>
+
+    <form method="get">
+        <label>Категория:</label>
+        <select name="category" onchange="this.form.submit()">
+            {% for c in categories %}
+                <option value="{{ c }}" {% if c == cat %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+        <input name="q" value="{{ query }}" placeholder="Поиск по названию...">
+        <button type="submit">Найти</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Название</th><th>Категория</th><th>Цена (₽)</th>
+                {% if login == "admin" %}<th>Пользователь (Автор)</th>{% endif %}
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.category }}</td>
+                <td>{{ "%.2f"|format(p.price) }}</td>
+                {% if login == "admin" %}<td>{{ p.owner }}</td>{% endif %}
+                <td>
+                    <form method="post" action="{{ url_for('delete', product_id=p.id) }}"
+                          onsubmit="return confirm('Удалить товар с ID {{ p.id }}?');">
+                        <button class="delete" type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Товаров нет</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('add') }}"><button type="button">Добавить товар</button></a>
+</div>
+{% endblock %}
