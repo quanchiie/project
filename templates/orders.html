@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Мои заказы{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Мои заказы</h1>
+
+    {% if orders %}
+        {% for o in orders %}
+        <fieldset>
+            <b>Заказ №{{ o.id }}</b> от {{ o.created }} — на сумму <b>{{ "%.2f"|format(o.total) }} ₽</b>
+            <table>
+                <tr><th>Товар</th><th>Цена (₽)</th><th>Кол-во</th></tr>
+                {% for name, price, qty in o.items %}
+                <tr><td>{{ name }}</td><td>{{ "%.2f"|format(price) }}</td><td>{{ qty }}</td></tr>
+                {% endfor %}
+            </table>
+        </fieldset>
+        {% endfor %}
+    {% else %}
+    <p>Заказов пока нет.</p>
+    {% endif %}
+</div>
+{% endblock %}
