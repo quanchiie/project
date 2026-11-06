@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h1>Продуктовый магазин</h1>
+
+    <form method="get">
+        <label>Категория:</label>
+        <select name="category" onchange="this.form.submit()">
+            {% for c in categories %}
+                <option value="{{ c }}" {% if c == cat %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+        <input name="q" value="{{ query }}" placeholder="Поиск по названию...">
+        <button type="submit">Найти</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Название</th><th>Категория</th><th>Цена (₽)</th>
+                {% if session.login == "admin" %}<th>Пользователь (Автор)</th>{% endif %}
+                <th></th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.category }}</td>
+                <td>{{ "%.2f"|format(p.price) }}</td>
+                {% if session.login == "admin" %}<td>{{ p.owner }}</td>{% endif %}
+                <td>
+    {% if session.login != "admin" %}
+    <form method="post" action="{{ url_for('cart_add', product_id=p.id) }}">
+        <button class="cart" type="submit">В корзину</button>
+    </form>
+    {% endif %}
+</td>
+                <td>
+                    <form method="post" action="{{ url_for('delete', product_id=p.id) }}"
+                          onsubmit="return confirm('Удалить товар с ID {{ p.id }}?');">
+                        <button class="delete" type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">Товаров нет</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+   <a href="{{ url_for('add') }}"><button type="button">Добавить товар</button></a>
+{% if session.login != "admin" %}
+    <a href="{{ url_for('cart') }}"><button class="cart" type="button">Перейти в корзину</button></a>
+{% endif %}
+</div>
+{% endblock %}
