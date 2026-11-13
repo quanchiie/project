@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Корзина{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Корзина</h1>
+
+    {% if items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th><th>Цена (₽)</th><th>Кол-во</th>
+                <th>Сумма (₽)</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ "%.2f"|format(item.price) }}</td>
+                <td>{{ item.qty }}</td>
+                <td>{{ "%.2f"|format(item.sum) }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('cart_remove', product_id=item.id) }}">
+                        <button class="delete" type="submit">Убрать</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="right"><b>Итого: {{ "%.2f"|format(total) }} ₽</b></p>
+
+    <form method="post" action="{{ url_for('cart_checkout') }}">
+        <button type="submit">Оформить заказ</button>
+    </form>
+    <form method="post" action="{{ url_for('cart_clear') }}">
+        <button class="delete" type="submit">Очистить корзину</button>
+    </form>
+    {% else %}
+    <p>Корзина пуста. Вернитесь в <a href="{{ url_for('index') }}">магазин</a> и добавьте товаров.</p>
+    {% endif %}
+</div>
+{% endblock %}

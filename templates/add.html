@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Добавить товар{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 420px; margin-top: 60px;">
+    <h1>Добавить товар</h1>
+    <form method="post">
+        <fieldset>
+            <p><label>Название:</label><input name="name" size="30"></p>
+            <p><label>Категория:</label><input name="category" size="30"></p>
+            <p><label>Цена (₽):</label><input name="price" size="30"></p>
+        </fieldset>
+        <button type="submit">Сохранить</button>
+        <a href="{{ url_for('index') }}"><button type="button">Отмена</button></a>
+    </form>
+</div>
+{% endblock %}
