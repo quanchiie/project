@@ -1,16 +1,27 @@
 {% extends "base.html" %}
 {% block title %}Добавить товар{% endblock %}
 {% block content %}
-<div class="card" style="max-width: 420px; margin-top: 60px;">
+<div class="card" style="max-width: 500px;">
     <h1>Добавить товар</h1>
     <form method="post">
-        <fieldset>
-            <p><label>Название:</label><input name="name" size="30"></p>
-            <p><label>Категория:</label><input name="category" size="30"></p>
-            <p><label>Цена (₽):</label><input name="price" size="30"></p>
-        </fieldset>
-        <button type="submit">Сохранить</button>
-        <a href="{{ url_for('index') }}"><button type="button">Отмена</button></a>
+        <p>
+            <label>Название:</label><br>
+            <input type="text" name="name" required>
+        </p>
+        <p>
+            <label>Категория:</label><br>
+            <input type="text" name="category" required>
+        </p>
+        <p>
+            <label>Цена (₽):</label><br>
+            <input type="number" name="price" step="0.01" min="0" required>
+        </p>
+        <p>
+            <label>Количество на складе:</label><br>
+            <input type="number" name="stock" value="10" min="0" required>
+        </p>
+        <button type="submit" class="btn-blue">Добавить</button>
     </form>
+    <p><a href="{{ url_for('index') }}">← Назад в магазин</a></p>
 </div>
 {% endblock %}
