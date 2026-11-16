@@ -1,12 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Авторизация — Продуктовый магазин{% endblock %}
+{% block title %}Вход{% endblock %}
 {% block content %}
-<div class="card" style="max-width: 380px; margin-top: 60px;">
-    <h1>Авторизация</h1>
+<div class="card" style="max-width: 400px; margin: 60px auto;">
+    <h1>Вход</h1>
     <form method="post">
-        <p><label>Логин:</label><input name="login" required></p>
-        <p><label>Пароль:</label><input name="password" type="password" required></p>
-        <button type="submit">Войти</button>
+        <p>
+            <label>Логин:</label><br>
+            <input type="text" name="login" required>
+        </p>
+        <p>
+            <label>Пароль:</label><br>
+            <input type="password" name="password" required>
+        </p>
+        <button type="submit" class="btn-blue">Войти</button>
     </form>
 </div>
 {% endblock %}
