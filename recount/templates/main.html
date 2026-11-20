@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h1>Продуктовый магазин</h1>
+
+    <form method="get">
+        Категория:
+        <select name="category" onchange="this.form.submit()">
+            {% for c in categories %}
+                <option value="{{ c }}" {% if c == cat %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="q" value="{{ query }}" placeholder="Поиск по названию...">
+        <button type="submit" class="btn-blue">Найти</button>
+    </form>
+
+    <table style="margin-top: 15px;">
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Цена (₽)</th>
+            <th>На складе</th>
+            {% if login == 'admin' %}<th>Пользователь (Автор)</th>{% endif %}
+            <th></th>
+            {% if login != 'admin' %}<th></th>{% endif %}
+        </tr>
+        {% for p in products %}
+        <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.category }}</td>
+            <td>{{ '%.2f'|format(p.price) }}</td>
+
+            {% if login == 'admin' %}
+            <td>
+                <form method="post" action="{{ url_for('stock', product_id=p.id) }}" class="stock-form">
+                    <input type="number" name="stock" value="{{ p.stock }}" min="0" required>
+                    <button type="submit" class="btn-ok">Обновить</button>
+                </form>
+                <span class="badge badge-{{ p.stock_css }}">{{ p.stock_label }}</span>
+            </td>
+            <td>{{ p.owner }}</td>
+            <td>
+                <form method="post" action="{{ url_for('delete', product_id=p.id) }}">
+                    <button type="submit" class="btn-red">Удалить</button>
+                </form>
+            </td>
+            {% else %}
+            <td><span class="badge badge-{{ p.stock_css }}">{{ p.stock_label }}</span></td>
+            <td>
+                {% if p.stock > 0 %}
+                    <form method="post" action="{{ url_for('cart_add', product_id=p.id) }}">
+                        <button type="submit" class="btn-green">В корзину</button>
+                    </form>
+                {% elif p.id in my_alerts %}
+                    <span class="badge badge-wait">✓ Ждёте поступление</span>
+                {% else %}
+                    <form method="post" action="{{ url_for('notify', product_id=p.id) }}">
+                        <button type="submit" class="btn-notify">Сообщить о поступлении</button>
+                    </form>
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('delete', product_id=p.id) }}">
+                    <button type="submit" class="btn-red">Удалить</button>
+                </form>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div style="margin-top: 15px;">
+        <a href="{{ url_for('add') }}"><button class="btn-blue">Добавить товар</button></a>
+        {% if login != 'admin' %}
+            <a href="{{ url_for('cart') }}"><button class="btn-green">Перейти в корзину</button></a>
+        {% endif %}
+        {% if login == 'admin' %}
+            <button type="button" class="btn-ok"
+                    onclick="document.getElementById('recalcModal').style.display='flex'">
+                Пересчитать цены
+            </button>
+        {% endif %}
+    </div>
+</div>
+
+{% if login == 'admin' %}
+<div id="recalcModal"
+     style="display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+            background:rgba(0,0,0,.5); align-items:center; justify-content:center; z-index:100;">
+    <div style="background:#fff; padding:24px; border-radius:10px; min-width:300px;">
+        <h3>Пересчёт цен</h3>
+        <form method="post" action="{{ url_for('recalc_prices') }}">
+            <label for="max_price">Менять товары дешевле (₽):</label><br>
+            <input type="number" id="max_price" name="max_price"
+                   step="0.01" min="0" required
+                   style="width:100%; margin:6px 0 12px; padding:8px;"><br>
+            <label for="new_price">Новая цена (₽):</label><br>
+            <input type="number" id="new_price" name="new_price"
+                   step="0.01" min="0" required
+                   style="width:100%; margin:6px 0 12px; padding:8px;">
+            <button type="submit" class="btn-ok">Пересчитать</button>
+            <button type="button" class="btn-red"
+                    onclick="document.getElementById('recalcModal').style.display='none'">
+                Отмена
+            </button>
+        </form>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

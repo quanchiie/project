@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Мои заказы{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Мои заказы</h1>
+    {% if orders %}
+        {% for order in orders %}
+            <div style="border: 1px solid #bbb; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <b>Заказ №{{ order.id }}</b> от {{ order.created }}
+                — на сумму {{ '%.2f'|format(order.total) }} ₽
+                <table style="margin-top: 8px;">
+                    <tr><th>Товар</th><th>Цена (₽)</th><th>Кол-во</th></tr>
+                    {% for name, price, qty in order.items %}
+                    <tr>
+                        <td>{{ name }}</td>
+                        <td>{{ '%.2f'|format(price) }}</td>
+                        <td>{{ qty }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Заказов пока нет.</p>
+    {% endif %}
+    <p><a href="{{ url_for('index') }}">← В магазин</a></p>
+</div>
+{% endblock %}

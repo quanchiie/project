@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Подписки на поступление{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>Подписки «Сообщить о поступлении»</h1>
+    {% if alerts %}
+        <table>
+            <tr><th>ID</th><th>Товар</th><th>Пользователь</th><th>Дата</th></tr>
+            {% for a in alerts %}
+            <tr>
+                <td>{{ a.id }}</td>
+                <td>{{ a.product_name }}</td>
+                <td>{{ a.user }}</td>
+                <td>{{ a.created }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Пока никто не подписался.</p>
+    {% endif %}
+    <p><a href="{{ url_for('index') }}">← В магазин</a></p>
+</div>
+{% endblock %}
